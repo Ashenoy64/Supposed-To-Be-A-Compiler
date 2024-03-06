@@ -6,10 +6,11 @@
     
     extern int countn;
     extern char *yytext;
-    //extern int yyerrstatus;
+    int yyerrstatus =0;
     void yyerror(const char *s);
     int yylex();
     int yywrap();
+
 %}
 
 %token VOID CHARACTER PRINTFF SCANFF INT FLOAT CHAR FOR IF ELSE TRUE FALSE NUMBER FLOAT_NUM ID LE GE EQ NE GT LT AND OR STR ADD MULTIPLY DIVIDE SUBTRACT UNARY INCLUDE RETURN DO DOUBLE MAIN WHILE SWITCH CASE BREAK DEFAULT
@@ -71,19 +72,22 @@ do: DO block WHILE '(' condition ')' ';'
 switch: SWITCH '(' expression ')' '{'  cases  '}'
 ;
 
-
-cases: case
+cases: case 
 | case default
 ;
 
 case: case case
-| CASE expression ':' body ';'
+| CASE expression ':' statements 
 | BREAK ';'
 ;
 
-default: DEFAULT ':'  body ';' BREAK ';'
+default: DEFAULT ':'  statements ';' BREAK ';'
+| DEFAULT ':'  statements ';'
 ;
 
+statements: statement ';' statements
+| statement ';'
+;
 
 
 
@@ -183,17 +187,61 @@ int main() {
     yyparse();
 }
 
+
+//panic mode recovery
+
 void yyerror(const char* msg) {
-    fprintf(stderr, "Error: %s, line number: %d, token: %s\n", msg,countn,yytext);
-    /*
-    yyerrok;
+    static int panic_count = 0; 
+    fprintf(stderr, "Error: %s, line number: %d, token: %s\n", msg, countn, yytext);
+   
+    if(panic_count>5)
+    return;
+
     while (1) {
         int token = yylex();
         if (token == ';' || token == '}' || token == ')') {
-            // Found a synchronization token, exit panic mode
-            yyerrok;
+            yyerrok; 
+            panic_count++;
+            yyparse(); 
             break;
         }
+        else if(token == 0)
+        {
+            return;
+        }
     }
-    */
+
+   
 }
+
+
+
+//parse level recovery
+/*
+void yyerror(const char *s) {
+    fprintf(stderr, "Syntax error: %s\n", s);
+    yyerrstatus = 1;
+}
+
+int yyparse() {
+    int res = yyparse_internal();
+    if (yyerrstatus)
+        printf("Parsing failed with errors\n");
+    else
+        printf("Parsing completed successfully\n");
+    return res;
+}
+
+int yyparse_internal() {
+    int res;
+    while (1) {
+        res = yyparse();
+        if (res == 0 || res == 2) // 0: success, 2: end of input
+            break;
+        // Error recovery strategy goes here
+        // For example, you can skip tokens until a semicolon or a closing brace is found
+        while (yylex() != ';' && yylex() != '}');
+    }
+    return res;
+}
+*/
