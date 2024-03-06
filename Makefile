@@ -23,7 +23,7 @@ $(LEXER):   lexer.l
 	$(FLEX) lexer.l
 
 $(PARSER): parser.y
-	$(YACC) $(YFLAGS) parser.y
+	$(YACC) $(YFLAGS) parser.y 
 
 clean:
 	rm -f $(LEXER) $(PARSER) $(OUTPUT) $(LEXER_TAB) $(PARSER_TAB)

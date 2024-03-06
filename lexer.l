@@ -1,6 +1,6 @@
 %{
     #include "y.tab.h"
-    int countn=0;
+    int countn=1;
 %}
 
 %option yylineno
@@ -25,6 +25,10 @@ unary "++"|"--"
 "if"	                    { return IF; }
 "else"	                    { return ELSE; }
 "main"                      { return MAIN; }
+"switch"                    { return SWITCH;}                   
+"case"                      { return CASE; }
+"break"                     { return BREAK; }
+"default"                   { return DEFAULT;}
 ^"#include"[ ]*<.+\.h>      { return INCLUDE; }
 "true"                      { return TRUE; }
 "false"                     { return FALSE; }

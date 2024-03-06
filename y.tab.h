@@ -88,7 +88,11 @@ extern int yydebug;
     DO = 289,                      /* DO  */
     DOUBLE = 290,                  /* DOUBLE  */
     MAIN = 291,                    /* MAIN  */
-    WHILE = 292                    /* WHILE  */
+    WHILE = 292,                   /* WHILE  */
+    SWITCH = 293,                  /* SWITCH  */
+    CASE = 294,                    /* CASE  */
+    BREAK = 295,                   /* BREAK  */
+    DEFAULT = 296                  /* DEFAULT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -132,6 +136,10 @@ extern int yydebug;
 #define DOUBLE 290
 #define MAIN 291
 #define WHILE 292
+#define SWITCH 293
+#define CASE 294
+#define BREAK 295
+#define DEFAULT 296
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
