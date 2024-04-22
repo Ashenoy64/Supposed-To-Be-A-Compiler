@@ -37,4 +37,5 @@ int main()
 																//while block not closed
 		}
 	}
+	return 0;
 }

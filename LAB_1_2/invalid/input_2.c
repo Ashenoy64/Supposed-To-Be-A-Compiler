@@ -32,7 +32,7 @@ int main()
 	}
 	while(a <= b)
 		while(a <= b)
-			while(a >= b)
+			while(a >= b);
 			{
 				int a_3;
 				a_3 = 3323 == 2665 + 297 > 5816;

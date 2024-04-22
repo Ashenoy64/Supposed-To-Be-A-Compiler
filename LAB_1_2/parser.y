@@ -4,7 +4,7 @@
     #include<stdlib.h>
     #include<ctype.h>
     
-    extern int countn;
+    extern int yylineno;
     extern char *yytext;
     int yyerrstatus =0;
     void yyerror(const char *s);
@@ -14,7 +14,6 @@
 %}
 
 %token VOID CHARACTER PRINTFF SCANFF INT FLOAT CHAR FOR IF ELSE TRUE FALSE NUMBER FLOAT_NUM ID LE GE EQ NE GT LT AND OR STR ADD MULTIPLY DIVIDE SUBTRACT UNARY INCLUDE RETURN DO DOUBLE MAIN WHILE SWITCH CASE BREAK DEFAULT
-
 %%
 
 program: headers main '{' body return '}'  
@@ -40,7 +39,7 @@ body: control
 | body body 
 | PRINTFF '(' STR ')' ';' 
 | SCANFF '(' STR ',' '&' ID ')' ';' 
-|  
+| '{' body '}'
 ;
 
 
@@ -69,7 +68,7 @@ while: WHILE '(' condition ')' block
 do: DO block WHILE '(' condition ')' ';'
 ;
 
-switch: SWITCH '(' expression ')' '{'  cases  '}'
+switch: SWITCH '(' expression ')' '{' cases '}'
 ;
 
 cases: case 
@@ -77,19 +76,13 @@ cases: case
 ;
 
 case: case case
-| CASE expression ':' statements 
+| CASE expression ':' body
 | BREAK ';'
 ;
 
-default: DEFAULT ':'  statements ';' BREAK ';'
-| DEFAULT ':'  statements ';'
+default: DEFAULT ':' body 
+| DEFAULT ':' body BREAK ';'
 ;
-
-statements: statement ';' statements
-| statement ';'
-;
-
-
 
 
 
@@ -190,10 +183,9 @@ int main() {
 
 //panic mode recovery
 
+
 void yyerror(const char* msg) {
     static int panic_count = 0; 
-    fprintf(stderr, "Error: %s, line number: %d, token: %s\n", msg, countn, yytext);
-   
     if(panic_count>5)
     return;
 
@@ -210,14 +202,15 @@ void yyerror(const char* msg) {
             return;
         }
     }
-
-   
 }
 
 
 
 //parse level recovery
 /*
+
+
+
 void yyerror(const char *s) {
     fprintf(stderr, "Syntax error: %s\n", s);
     yyerrstatus = 1;

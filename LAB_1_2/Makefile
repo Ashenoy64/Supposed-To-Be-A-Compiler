@@ -1,11 +1,10 @@
-# Makefile for Flex (lexer.l) and Bison (parser.y) example
 
-CC = cc
+CC = gcc
 
 FLEX = flex
 
-YACC = yacc
-YFLAGS = -d
+YACC = bison
+YFLAGS = -dy
 
 OUTPUT = parser
 
@@ -23,7 +22,7 @@ $(LEXER):   lexer.l
 	$(FLEX) lexer.l
 
 $(PARSER): parser.y
-	$(YACC) $(YFLAGS) parser.y 
+	$(YACC) $(YFLAGS) parser.y  -Wno
 
 clean:
 	rm -f $(LEXER) $(PARSER) $(OUTPUT) $(LEXER_TAB) $(PARSER_TAB)
